@@ -1,4 +1,4 @@
-from flask import (Blueprint, redirect, render_template, request, session, url_for,request)
+from flask import (Blueprint, redirect, render_template, request, session, url_for,request,Response)
 
 from app import db
 from app.models import Appraisal, DisciplinaryAction, LeaveApproval, SwipeCard, EmployeeSwipeCard, Employee, Department, Timesheet, User, disciplinary_action
@@ -6,6 +6,8 @@ from flask_login import login_required
 from datetime import datetime
 bp = Blueprint('dashboard', __name__, url_prefix='/')
 from datetime import date
+import io
+import csv
 
 
 @bp.route('/', methods=["POST","GET"])
@@ -122,3 +124,22 @@ def create_user():
     db.session.commit()
 
     return redirect(url_for("employees.view_employee"))
+
+@bp.route('/monthly-late-report', methods=["POST","GET"])
+def late_report():
+    late_timesheets = Timesheet.query.all()
+    late_records = [x for x in late_timesheets if x.is_late()=="Late"]
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    line = ['Employee First Name', 'Employee Last Name','Date']
+    writer.writerow(line)
+
+    for timesheet in late_records:
+        line = [timesheet.swipecard.empSwipeCard[0].employee.f_name,timesheet.swipecard.empSwipeCard[0].employee.l_name, timesheet.time_in.date()]
+        writer.writerow(line)
+
+    output.seek(0)
+    
+    return Response(output, mimetype="text/csv", headers={"Content-Disposition":"attachment;filename=employee_report.csv"})
+
