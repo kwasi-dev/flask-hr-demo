@@ -29,7 +29,7 @@ class Timesheet(db.Model):
 
         # For demonstration, the overtime hours is half of what the user worked
         hours_worked = (self.time_out - self.time_in).total_seconds() / 60.0 / 60.0
-        overtime = 12 - hours_worked if hours_worked > 12 else 0
+        overtime =  hours_worked - 12 if hours_worked > 12 else 0
         return "{:.2f} hours".format(overtime)
 
     
