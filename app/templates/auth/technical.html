@@ -42,8 +42,7 @@
           <th>Department</th>
           <th>Time In</th>
           <th>Time Out</th>
-          <th>Late</th>
-          <th>Left Early</th>
+          <th>Overtime</th>
         </tr>
       </thead>
       <tbody>
@@ -65,10 +64,7 @@
             {{timesheet.time_out}}
           </td>
           <td>
-            {{timesheet.is_late()}}
-          </td>
-          <td>
-            {{timesheet.left_early()}}
+            {{timesheet.overtime()}}
           </td>
         </tr>
         {% endfor %}

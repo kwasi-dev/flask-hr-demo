@@ -32,4 +32,23 @@ class Timesheet(db.Model):
         overtime =  hours_worked - 12 if hours_worked > 12 else 0
         return "{:.2f} hours".format(overtime)
 
+    def is_late(self):
+        emp_type = self.swipecard.empSwipeCard[0].employee.emp_type
+        if emp_type == 'technical':
+            return 'N/A'
+        
+        if self.time_in.hour >=6 and self.time_in.minute>0:
+            return "Late"
+        
+        return ""
+
     
+    def left_early(self):
+        emp_type = self.swipecard.empSwipeCard[0].employee.emp_type
+        if emp_type == 'technical':
+            return 'N/A'
+        
+        if self.time_out.hour < 18:
+            return "Left Early"
+        
+        return ""
