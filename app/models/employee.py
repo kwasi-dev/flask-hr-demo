@@ -1,8 +1,9 @@
+import datetime
 from app import db
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import relationship
-
+from datetime import datetime
 class Employee(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     emp_type = db.Column(db.String())
@@ -48,7 +49,8 @@ class Employee(db.Model):
 
         if my_swipecard:
             swipecard_id = my_swipecard.swipecard_id
-            open_timesheet = Timesheet.query.filter(Timesheet.swipecard_id == swipecard_id).filter(Timesheet.time_out == None).first()
+            now = datetime.now()
+            open_timesheet = Timesheet.query.filter(Timesheet.swipecard_id == swipecard_id).filter(Timesheet.time_out >= now) .filter(Timesheet.time_in <= now) .first()
             if open_timesheet:
                 att = "Present"
         return att
