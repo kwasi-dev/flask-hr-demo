@@ -92,7 +92,14 @@ def technical():
         if rec.empSwipeCard:
             swipecard_ids.append(rec.empSwipeCard[0].swipecard.id)
     all_timesheets = [x for x in Timesheet.query.all() if x.swipecard_id in swipecard_ids]
-    return render_template('auth/technical.html', employees=all_employees, timesheets=all_timesheets)
+
+
+    today = date.today()
+    present_employees = Timesheet.query.filter(Timesheet.time_in >= today).all()
+
+    emp_count = len(set([x.swipecard_id for x in present_employees if x.swipecard_id in swipecard_ids]))
+
+    return render_template('auth/technical.html', employees=all_employees, timesheets=all_timesheets, emp_count=emp_count)
 
 
 @bp.route('/grant-login', methods=["POST"])
