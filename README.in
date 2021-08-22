@@ -1,3 +1,10 @@
 # Install dependencies
 
 sudo apt install pcscd pcsc-tools libpcsclite-dev python3-pyscard python3-cmd2 libusb-1.0-0
+
+
+SECRET_KEY=phaeghei1Aephaebibief1equuit7shu
+SQLALCHEMY_DATABASE_URI=postgresql://username:password@localhost:5432/db_name
+SQLALCHEMY_TRACK_MODIFICATIONS=false
+JWT_SECRET_KEY=igh6AeBah0hoolu6oong5pheigh9detu
+JWT_TOKEN_LOCATION=cookies
