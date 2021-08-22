@@ -1,0 +1,224 @@
+{% extends 'auth/auth_base.html' %}
+
+{% block links %}
+{{ super() }}
+<link href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+<script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h3 class="">Employee Management</h3>
+
+  <button type="button" class="btn btn-primary my-4" data-bs-toggle="modal" data-bs-target="#empCreateModal">
+    Create Employee
+  </button>
+
+  <table id="emptable" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Employee Name</th>
+        <th>Contact</th>
+        <th>Location</th>
+        <th>Department</th>
+        <th>Attendance</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for employee in employees %}
+      <tr>
+        <td>{{employee.f_name}} {{employee.l_name}}</td>
+        <td>{{employee.phone}}</td>
+        <td>{{employee.location}}</td>
+        {% for department in departments %}
+        {% if department.id == employee.department_id %}
+        <td>{{department.department_name}}</td>
+        {% endif %}
+        {% endfor %}
+        <td>{{employee.attendance()}}</td>
+
+        <td>
+          <div class="dropdown">
+            <button class="btn btn-info px-2 dropbtn">...</button>
+            <div class="dropdown-content">
+              <a href="#" data-bs-toggle="modal" data-bs-target="#assignSwipecardModal"
+                data-emp-id="{{employee.id}}" data-emp-name="{{employee.f_name}} {{employee.l_name}}">Assign Swipecard</a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#allowLoginModal"
+                  data-emp-id="{{employee.id}}" data-emp-name="{{employee.f_name}} {{employee.l_name}}">Allow Login</a>
+            </div>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="assignSwipecardModal" tabindex="-1" aria-labelledby="assignSwipecardModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title" id="assignSwipecardModalLabel">Assign Swipecard</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <span>To assign a swipecard to this employee, please scan the swipecard on the reader</span>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="empCreateModal" tabindex="-1" aria-labelledby="empCreateModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title" id="empCreateModalLabel">Create Employee</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="input-group form-group mb-2">
+            <input type="text" name="f_name" class="form-control" required placeholder="First Name">
+          </div>
+          <div class="input-group form-group mb-2">
+            <input type="text" name="l_name" class="form-control" required placeholder="Last Name">
+          </div>
+          <div class="input-group form-group mb-2">
+            <input type="date" name="dob" class="form-control" required placeholder="Date of Birth">
+          </div>
+          <div class="input-group form-group mb-2">
+            <input type="text" name="addr_line_1" class="form-control" required placeholder="Address Line 1">
+          </div>
+          <div class="input-group form-group mb-2">
+            <input type="text" name="add_line_2" class="form-control" placeholder="Address Line 2">
+          </div>
+          <div class="input-group form-group mb-2">
+            <input type="text" name="city" class="form-control" required placeholder="City">
+          </div>
+          <div class="input-group form-group mb-2">
+            <input type="phone" name="phone" class="form-control" required placeholder="Phone">
+          </div>
+          <div class="input-group form-group mb-2">
+            <input type="text" name="location" class="form-control" required placeholder="Location">
+          </div>
+          <div class="input-group form-group mb-2">
+            <select name="emp_type" class="form-control">
+              <option value="clerical">Clerical</option>
+              <option value="technical">Technical</option>
+            </select>
+          </div>
+          <div class="input-group form-group mb-2">
+            <select name="department_id" class="form-control">\
+              {% for department in departments %}
+              <option value="{{department.id}}">{{department.department_name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="confirmSwipecardModal" tabindex="-1" aria-labelledby="confirmSwipecardModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="assign-swipecard">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmSwipecardModalLabel">Confirm Swipecard</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <span id="confirmText"></span>
+          <input type="hidden" name="employee_id" id="employee_id"/>
+          <input type="hidden" name="swipecard_id" id="swipecard_id"/>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Allow Login Modal -->
+<div class="modal fade" id="allowLoginModal" tabindex="-1" aria-labelledby="allowLoginModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="grant-login">
+        <div class="modal-header">
+          <h5 class="modal-title" id="allowLoginModalLabel">Grant Login Access</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <span id="confirmText"></span>
+          <input type="hidden" name="emp_id" id="emp_id"/>
+          <input type="email" name="email" required placeholder="Employee's Email"/>
+          <input type="password" name="password" required placeholder="Password"/>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  $("#emptable").DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'print'
+        ]
+    });
+
+  $('#assignSwipecardModal').on('show.bs.modal', function (e) {
+    var employee_id = $(e.relatedTarget).data('emp-id');
+    var employee_name = $(e.relatedTarget).data('emp-name');
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        // Typical action to be performed when the document is ready:
+        $('#assignSwipecardModal').modal('hide');
+        $('#confirmSwipecardModal').modal('show');
+        $('#employee_id').val(employee_id);
+        $('#swipecard_id').val(xhttp.responseText);
+
+        $('#confirmText').text("Are you sure you want to assign the swipecard with ID "+xhttp.responseText +" to "+employee_name+"? This would deactivate their current cards (if any)")
+      }
+    };
+    xhttp.open("GET", "/read-card", true);
+    xhttp.send();
+  });
+
+  $('#allowLoginModal').on('show.bs.modal', function (e) {
+    var employee_id = $(e.relatedTarget).data('emp-id');
+    $('#emp_id').val(employee_id);
+  });
+
+
+  
+</script>
+{% endblock %}

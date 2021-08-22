@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %} {% endblock %}</h1>
+{% endblock %}
+
+{% block links %}
+<link href="{{ url_for('static', filename='css/login.css') }}" rel="stylesheet">
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    
+  <button type="button" class="btn btn-primary my-4" data-bs-toggle="modal" data-bs-target="#createLeaveRequestModal">
+    Create Request
+  </button>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+<div id="mySidenav" class="sidenav col">
+    <a href="{{ url_for('dashboard.home') }}"><span class="h6">Home</span></a>
+    <a href="{{ url_for('employees.view_employee') }}"><span class="h6">Employee Management</span></a>
+    <button class="dropdown-btn">Department Management <i class="fa fa-caret-down"></i></button>
+      <div class="dropdown-container">
+        <a href="{{ url_for('dashboard.clerical') }}">Clerical</a>
+        <a href="{{ url_for('dashboard.technical') }}">Technical</a>
+      </div>
+    <a href="{{ url_for('appraisal.view_appraisal') }}"><span class="h6">Appraisal Management</span></a>
+    <a href="{{ url_for('leave.view_leave') }}"><span class="h6">Leave Management</span></a>
+    <a href="{{ url_for('discipline.view_discipline') }}"><span class="h6">Disciplinary Management</span></a>
+    <a href="{{ url_for('auth.logout') }}"  id="logout"><span class="h6">Log out</span></a>
+  </div>
+<div id="main">
+    <nav class="navbar navbar-light bg-light justify-content-between">
+        <a class="px-4 navbar-brand" href="#" onclick="toggleNav()">&#9776;</a>
+        <div class="px-4 ">
+            <span class="text-muted h4">Welcome Back, {{g.user.employee.f_name}}!</span>
+            <div class="dropdown">
+                <span class="fa fa-2x fa-user-circle px-2 dropbtn"></span>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('support.department') }}">Department</a>
+                    <a href="{{ url_for('support.timesheet') }}">Timesheet</a>
+                    <a href="{{ url_for('support.leavetype') }}">Leave Types</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>

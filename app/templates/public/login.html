@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %} {% endblock %}</h1>
+{% endblock %}
+
+{% block links %}
+<link href="{{ url_for('static', filename='css/login.css') }}" rel="stylesheet">
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-center h-100">
+        <div class="card">
+            <div class="card-header">
+                <h3>Sign In</h3>
+
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="input-group form-group mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa fa-user"></i></span>
+                        </div>
+                        <input type="text" name="username" class="form-control" placeholder="Your Email">
+                    </div>
+                    <div class="input-group form-group mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa fa-key"></i></span>
+                        </div>
+                        <input type="password" name="password"  class="form-control" placeholder="Your Password">
+                    </div>
+                    <div class="row align-items-center remember mb-4">
+						<input name="remember" type="checkbox">Remember Me
+					</div>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                      {% for category, message in messages %}
+                        {% if category=='login-error' %}
+                          <div class="alert alert-danger">{{ message }}</div>
+                        {% endif %}
+                      {% endfor %}
+                    {% endif %}
+                  {% endwith %}
+                    <div class="form-group mt-4">
+                        <input type="submit" value="Login" class="btn float-right btn-info login_btn">
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-center links">
+                    Copyright &copy; Celine Bruce 2021
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

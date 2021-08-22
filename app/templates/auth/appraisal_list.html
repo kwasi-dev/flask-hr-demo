@@ -1,0 +1,127 @@
+{% extends 'auth/auth_base.html' %}
+
+{% block links %}
+{{ super() }}
+<link href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+<script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h3 class="">Appraisal Management</h3>
+
+  <button type="button" class="btn btn-primary my-4" data-bs-toggle="modal" data-bs-target="#assignSwipecardModal">
+    Create Appraisal
+  </button>
+
+  <table id="appraisaltable" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Employee Name</th>
+        <th>Appraisal Date</th>
+        <th>Is Completed</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for appraisal in appraisals %}
+      <tr>
+        <td>{{appraisal.employee.f_name}} {{appraisal.employee.l_name}}</td>
+        <td>{{appraisal.appraisal_date}}</td>
+        <td>{{appraisal.is_completed}}</td>
+        {% if appraisal.is_completed %}
+        <td></td>
+        {% else %}
+        <td>
+          <button class="btn btn-primary" data-appr-id="{{appraisal.id}}" data-bs-toggle="modal" data-bs-target="#completeAppraisalModal">Complete</button>
+        </td>
+        {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="assignSwipecardModal" tabindex="-1" aria-labelledby="assignSwipecardModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title" id="allowLoginModalLabel">Appraisal Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <span id="confirmText"></span>
+          <div class="input-group form-group mb-2">
+            <select name="employee_id" class="form-control">
+              {% for employee in employees %}
+              <option value="{{employee.id}}">{{employee.f_name}} {{employee.l_name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="input-group form-group mb-2">
+            <input type="date" name="appraisal_date" required placeholder="Appraisal Date" />
+          </div>
+          <div class="input-group form-group mb-2 align-items-center">
+            <input name="is_complete" type="checkbox">&nbsp;Is Completed
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="completeAppraisalModal" tabindex="-1" aria-labelledby="completeAppraisalModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="confirm-appraisal">
+        <div class="modal-header">
+          <h5 class="modal-title" id="completeAppraisalModalLabel">Confirm Appraisal</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <span id="confirmText">Are you sure you want to confirm this appraisal?</span>
+          <input type="hidden" id="appraisal_id" name="appraisal_id"/>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  $("#appraisaltable").DataTable(
+    {
+        dom: 'Bfrtip',
+        buttons: [
+            'print'
+        ]
+    }
+  );
+
+  $('#completeAppraisalModal').on('show.bs.modal', function (e) {
+    var appr_id = $(e.relatedTarget).data('appr-id');
+    $('#appraisal_id').val(appr_id);
+  });
+
+</script>
+{% endblock %}

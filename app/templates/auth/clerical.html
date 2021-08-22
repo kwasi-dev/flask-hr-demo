@@ -1,0 +1,79 @@
+{% extends 'auth/auth_base.html' %}
+{% block links %}
+{{ super() }}
+<link href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+<script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row py-4">
+    <div class="col-lg-5">
+      <div class="card">
+        <div class="card-header">
+          Overview
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Total Headcount</h5>
+          {% if emp_count %}
+          <p class="card-text">{{emp_count}} Employees</p>
+          {% else %}
+          <p class="card-text">0 Employees</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+
+    <table id="emptable" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Employee ID</th>
+          <th>Employee Name</th>
+          <th>Department</th>
+          <th>Time In</th>
+          <th>Time Out</th>
+          <th>Overtime</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for timesheet in timesheets %}
+        <tr>
+          <td>
+            {{timesheet.swipecard.empSwipeCard[0].employee.id}}
+          </td>
+          <td>
+            {{timesheet.swipecard.empSwipeCard[0].employee.f_name}}{{timesheet.swipecard.empSwipeCard[0].employee.l_name}}
+          </td>
+          <td>
+            {{timesheet.swipecard.empSwipeCard[0].employee.department.department_name}}
+          </td>
+          <td>
+            {{timesheet.time_in}}
+          </td>
+          <td>
+            {{timesheet.time_out}}
+          </td>
+          <td>
+            {{timesheet.overtime()}}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<script>
+  $("#emptable").DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'print'
+        ]
+    });
+</script>
+{% endblock %}

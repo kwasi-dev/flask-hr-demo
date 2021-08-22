@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block links %}
+<link href="{{ url_for('static', filename='css/sidenav.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/sidenav.js') }}"></script>
+{% endblock %}
+
+<div class="container-fluid">
+  {% include 'auth/sidebar.html' %}
+
+  <div id="content">
+    {% block content %}
+    {% endblock %}
+  
+  </div>
+</div>
